@@ -68,7 +68,12 @@ func VerifySignature(message, signature string, publicKey *rsa.PublicKey) error 
 		return err
 	}
 
-	err = rsa.VerifyPSS(publicKey, crypto.SHA256, hashed[:], signatureBytes, nil)
+	err = rsa.VerifyPSS(
+		publicKey,
+		crypto.SHA256,
+		hashed[:],
+		signatureBytes,
+		nil)
 	if err != nil {
 		return fmt.Errorf("assinatura inválida: %v", err)
 	}
