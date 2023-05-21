@@ -35,7 +35,11 @@ func GenerateKeyPair() (*Crypto, error) {
 // Criptografa uma string utilizando a chave pública
 func (c *Crypto) Encrypt(plaintext string) (string, error) {
 	label := []byte("")
-	encryptedBytes, err := rsa.EncryptOAEP(sha256.New(), rand.Reader, c.publicKey, []byte(plaintext), label)
+	encryptedBytes, err := rsa.EncryptOAEP(
+		sha256.New(),
+		rand.Reader,
+		c.publicKey,
+		[]byte(plaintext), label)
 	if err != nil {
 		return "", err
 	}
@@ -163,6 +167,20 @@ func (c *Crypto) GetPublicKeyFingerprint() (string, error) {
 
 	hash := md5.Sum(publicKeyBytes)
 	fingerprint := hex.EncodeToString(hash[:])
+
+	return fingerprint, nil
+}
+
+// Retorna o fingerprint (impressão digital) da chave pública reduzido (base64 sem padding)
+func (c *Crypto) GetPublicKeyFingerprintShort() (string, error) {
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(c.publicKey)
+	if err != nil {
+		return "", err
+	}
+
+	hash := md5.Sum(publicKeyBytes)
+	fingerprint := base64.StdEncoding.EncodeToString(hash[:])
+	fingerprint = fingerprint[:len(fingerprint)-2]
 
 	return fingerprint, nil
 }
