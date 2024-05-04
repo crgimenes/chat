@@ -11,7 +11,7 @@ import (
 	"encoding/hex"
 	"encoding/pem"
 	"fmt"
-	"io/ioutil"
+	"os"
 )
 
 type Crypto struct {
@@ -105,7 +105,7 @@ func (c *Crypto) SaveKeyPair(privateKeyPath, publicKeyPath string) error {
 		Bytes: x509.MarshalPKCS1PrivateKey(c.privateKey),
 	})
 
-	err := ioutil.WriteFile(privateKeyPath, privateKeyBytes, 0600)
+	err := os.WriteFile(privateKeyPath, privateKeyBytes, 0600)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (c *Crypto) SaveKeyPair(privateKeyPath, publicKeyPath string) error {
 		Bytes: publicKeyBytes,
 	})
 
-	err = ioutil.WriteFile(publicKeyPath, publicKeyBytes, 0644)
+	err = os.WriteFile(publicKeyPath, publicKeyBytes, 0644)
 	if err != nil {
 		return err
 	}
@@ -130,7 +130,7 @@ func (c *Crypto) SaveKeyPair(privateKeyPath, publicKeyPath string) error {
 
 // Carrega o par de chaves a partir de arquivos
 func LoadKeyPair(privateKeyPath, publicKeyPath string) (*Crypto, error) {
-	privateKeyBytes, err := ioutil.ReadFile(privateKeyPath)
+	privateKeyBytes, err := os.ReadFile(privateKeyPath)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func LoadKeyPair(privateKeyPath, publicKeyPath string) (*Crypto, error) {
 		return nil, err
 	}
 
-	publicKeyBytes, err := ioutil.ReadFile(publicKeyPath)
+	publicKeyBytes, err := os.ReadFile(publicKeyPath)
 	if err != nil {
 		return nil, err
 	}
